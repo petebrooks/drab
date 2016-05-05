@@ -1,0 +1,5 @@
+= drab
+
+Generate this with
+    drab rdoc
+After you have described your command line interface

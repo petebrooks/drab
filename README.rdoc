@@ -1,0 +1,6 @@
+= drab
+
+Describe your project here
+
+:include:drab.rdoc
+
