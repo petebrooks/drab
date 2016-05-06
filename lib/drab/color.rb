@@ -1,5 +1,3 @@
-require "drab/config"
-
 module Drab
 
   class Color
@@ -33,9 +31,17 @@ module Drab
       }
     end
 
+    def to_hex
+      [red, green, blue].map { |e| e.to_s(16) }.join
+    end
+
+    def name
+      Drab::Name[to_hex]
+    end
+
     def save!
       config[Dir.pwd] = self
-      puts "saving dir #{Dir.pwd}"
+      puts ["Saved color", name.inspect, "for #{Dir.pwd}"].compact.join(" ")
     end
 
     def set!
