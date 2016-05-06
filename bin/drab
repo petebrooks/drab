@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
-require 'gli'
+require "gli"
+require "drab/color"
+require "drab/config"
 
 include GLI::App
 
-program_desc 'Faggier iTerm tabs'
+program_desc "Faggier iTerm tabs"
 
 version Drab::VERSION
 
@@ -11,44 +13,57 @@ subcommand_option_handling :normal
 arguments :strict
 sort_help :manually
 
-desc 'Save this color for the current directory'
+desc "Save this color for the current directory"
 switch [:s, :save]
 
-desc 'Set an RGB color for the current tab'
-arg_name 'Specify an RGB color'
-command :rgb do |c|
-  # c.desc 'Red value'
-  # c.default_value 0
-  # c.arg_name 'red'
-  # c.flag [:r, :red]
-
-  # c.desc 'Green value'
-  # c.default_value 0
-  # c.arg_name 'green'
-  # c.flag [:g, :green]
-
-  # c.desc 'Blue value'
-  # c.default_value 0
-  # c.arg_name 'blue'
-  # c.flag [:b, :blue]
-
-  # c.desc 'Hex value'
-  # c.default_value "ffff"
-  # c.arg_name 'hex'
-  # c.flag [:h, :hex]
-
+desc "Get a saved color and set it in the current shell"
+command :get do |c|
   c.action do |global, options, args|
-    system "echo", "-n", %Q(\033]6;1;bg;red;brightness;#{args[0]}\a)
-    system "echo", "-n", %Q(\033]6;1;bg;green;brightness;#{args[1]}\a)
-    system "echo", "-n", %Q(\033]6;1;bg;blue;brightness;#{args[2]}\a)
-
-    # If you have any errors, just raise them
-    # raise "that command made no sense"
-    puts "rgb command ran"
+    color = Drab::Config[Dir.pwd]
+    color.set! if color
   end
 end
 
-desc 'Reset the color for the current tab'
+desc "Set an RGB color for the current tab"
+arg_name "Specify an RGB color"
+command :rgb do |c|
+  # c.desc "Red value"
+  # c.default_value 0
+  # c.arg_name "red"
+  # c.flag [:r, :red]
+
+  # c.desc "Green value"
+  # c.default_value 0
+  # c.arg_name "green"
+  # c.flag [:g, :green]
+
+  # c.desc "Blue value"
+  # c.default_value 0
+  # c.arg_name "blue"
+  # c.flag [:b, :blue]
+
+  # c.desc "Hex value"
+  # c.default_value "ffff"
+  # c.arg_name "hex"
+  # c.flag [:h, :hex]
+
+  c.action do |global, options, args|
+    color = Drab::Color.new(args)
+    color.set!
+  end
+end
+
+desc "Set a hexadecimal color for the current tab"
+arg_name "Specify a hexadecimal color"
+command :hex do |c|
+  c.action do |global, _options, args|
+    color = Drab::Color.from_hex(args.first)
+    color.set!
+    color.save! if global[:save]
+  end
+end
+
+desc "Reset the color for the current tab"
 command :reset do |c|
   c.action do |global, options, args|
     system "echo", "-n", %Q(\033]6;1;bg;*;default\a)
