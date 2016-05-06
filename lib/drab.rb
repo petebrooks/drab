@@ -1,4 +1,5 @@
 require "drab/version.rb"
+require "drab/refinements"
 require "drab/store"
 require "drab/config"
 require "drab/name"

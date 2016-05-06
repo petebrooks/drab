@@ -4,6 +4,8 @@ require "drab"
 
 include GLI::App
 
+using Drab::Refinements
+
 program_desc "Faggier iTerm tabs"
 
 version Drab::VERSION
@@ -47,8 +49,10 @@ command :rgb do |c|
   # c.flag [:h, :hex]
 
   c.action do |global, options, args|
-    color = Drab::Color.new(args)
+    color = args.to_color
+    p color
     color.set!
+    color.save! if global[:save]
   end
 end
 
@@ -56,7 +60,8 @@ desc "Set a hexadecimal color for the current tab"
 arg_name "Specify a hexadecimal color"
 command :hex do |c|
   c.action do |global, _options, args|
-    color = Drab::Color.from_hex(args.first)
+    color = args.first.to_color
+    p color
     color.set!
     color.save! if global[:save]
   end

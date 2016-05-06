@@ -2,21 +2,6 @@ module Drab
 
   class Color
 
-    module Double
-      refine String do
-        def double
-          chars.zip(chars).flatten.join
-        end
-      end
-    end
-
-    using Double
-
-    def self.from_hex(hex_value)
-      hex_value = hex_value.double if hex_value.length == 3
-      new hex_value.scan(/.{2}/).map { |e| e.to_i(16) }
-    end
-
     attr_reader :red, :green, :blue
 
     def initialize(args)
